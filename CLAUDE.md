@@ -78,8 +78,9 @@ vendor/bin/phpstan analyse      # 直接运行静态分析
 - 队列配置通过ThinkPHP配置系统管理
 - MNS配置键: `ram.mns`
 - MQ配置键: `ram.mq`
-- RabbitMQ配置键: `rabbitmq`
-- 配置文件示例在`apps/configs/extra/ram.php`
+- RabbitMQ配置键: `ram.rabbitmq`
+- 配置文件位置: `apps/configs/extra/ram.php`
+- 环境变量示例: `.env.example`
 
 ### 多进程架构
 
@@ -111,17 +112,31 @@ vendor/bin/phpstan analyse      # 直接运行静态分析
 
 ## RabbitMQ配置示例
 
+### 环境变量配置 (.env)
+```ini
+[rabbitmq]
+host = localhost
+port = 5672
+username = guest
+password = guest
+vhost = /
+connection_timeout = 3.0
+read_write_timeout = 9.0
+keepalive = true
+heartbeat = 0
+```
+
+### 配置文件 (apps/configs/extra/ram.php)
 ```php
-// config/rabbitmq.php
-return [
-    'host' => 'localhost',
-    'port' => 5672,
-    'username' => 'guest',
-    'password' => 'guest',
-    'vhost' => '/',
-    'connection_timeout' => 3.0,
-    'read_write_timeout' => 3.0,
-    'keepalive' => false,
-    'heartbeat' => 0,
-];
+'rabbitmq' => [
+    'host' => Env::get('rabbitmq.host', 'localhost'),
+    'port' => Env::get('rabbitmq.port', 5672),
+    'username' => Env::get('rabbitmq.username', 'guest'),
+    'password' => Env::get('rabbitmq.password', 'guest'),
+    'vhost' => Env::get('rabbitmq.vhost', '/'),
+    'connection_timeout' => Env::get('rabbitmq.connection_timeout', 3.0),
+    'read_write_timeout' => Env::get('rabbitmq.read_write_timeout', 9.0),
+    'keepalive' => Env::get('rabbitmq.keepalive', true),
+    'heartbeat' => Env::get('rabbitmq.heartbeat', 0),
+],
 ```

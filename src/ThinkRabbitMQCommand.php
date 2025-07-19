@@ -418,9 +418,9 @@ abstract class ThinkRabbitMQCommand extends ThinkCommand
     protected function getConfigs(): array
     {
         if (null === $this->configs) {
-            $this->configs = Config::get('rabbitmq');
+            $this->configs = Config::get('ram.rabbitmq');
             if (empty($this->configs)) {
-                throw new \Exception('config[rabbitmq] not found.');
+                throw new \Exception('config[ram.rabbitmq] not found.');
             }
         }
 
