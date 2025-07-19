@@ -6,7 +6,9 @@
   "keywords": [
     "sdk",
     "library",
-    "thinkphp"
+    "thinkphp",
+    "rabbitmq",
+    "message-queue"
   ],
   "support": {
     "source": "https://github.com/chinayin/think-command",
@@ -21,10 +23,11 @@
   "require": {
     "php": ">=7.2",
     "ext-json": "*",
-    "chinayin/thinkphp5": "~5.0",
-    "aliyunmq/mq-http-sdk": "^1.0",
     "aliyun/aliyun-mns-php-sdk": "^1.1",
-    "godruoyi/php-snowflake": "^1.0"
+    "aliyunmq/mq-http-sdk": "^1.0",
+    "chinayin/thinkphp5": "~5.0",
+    "godruoyi/php-snowflake": "^1.0",
+    "php-amqplib/php-amqplib": "^3.7"
   },
   "require-dev": {
     "eaglewu/swoole-ide-helper": "dev-master",
@@ -40,7 +43,10 @@
   "config": {
     "sort-packages": true,
     "preferred-install": "dist",
-    "optimize-autoloader": true
+    "optimize-autoloader": true,
+    "allow-plugins": {
+      "chinayin/think-installer": true
+    }
   },
   "extra": {
   },
