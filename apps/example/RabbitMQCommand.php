@@ -20,22 +20,40 @@ use think\command\ThinkRabbitMQCommand;
  */
 final class RabbitMQCommand extends ThinkRabbitMQCommand
 {
-    // 命令行配置
+    /** @var string 命令名称 */
     protected $commandName = 'example:RabbitMQ';
+    
+    /** @var string 命令描述 */
     protected $commandDescription = 'RabbitMQ queue consumer example';
 
-    // RabbitMQ配置
+    /** @var string 交换机名称 */
     protected $exchangeName = 'test_exchange';
+    
+    /** @var string 交换机类型 */
     protected $exchangeType = 'direct';
+    
+    /** @var string 队列名称 */
     protected $queueName = 'test_queue';
+    
+    /** @var string 路由键 */
     protected $routingKey = 'test.routing.key';
+    
+    /** @var bool 队列持久化 */
     protected $queueDurable = true;
+    
+    /** @var bool 自动确认消息 */
     protected $autoAck = false;
+    
+    /** @var int QoS预取数量 */
     protected $prefetchCount = 1;
 
-    // 其他配置
+    /** @var int 最大消费重试次数 */
     protected $maxConsumedTimes = 3;
+    
+    /** @var int 消费超时时间(秒) */
     protected $consumeTimeout = 30;
+    
+    /** @var bool 允许命令行参数覆盖队列名称 */
     protected $allowOverrideQueueName = true;
 
     /**
@@ -66,10 +84,6 @@ final class RabbitMQCommand extends ThinkRabbitMQCommand
                 switch ($json['action']) {
                     case 'send_email':
                         return $this->handleSendEmail($json, $workerId);
-                    case 'process_order':
-                        return $this->handleProcessOrder($json, $workerId);
-                    case 'generate_report':
-                        return $this->handleGenerateReport($json, $workerId);
                     default:
                         $this->addWarn("Unknown action: {$json['action']}");
                         return true; // 未知动作直接确认，避免无限重试
@@ -111,42 +125,6 @@ final class RabbitMQCommand extends ThinkRabbitMQCommand
         }
         
         $this->println('Worker#%d: Email sent successfully', $workerId);
-        return true;
-    }
-
-    /**
-     * 处理订单
-     */
-    private function handleProcessOrder(array $data, int $workerId): bool
-    {
-        $orderId = $data['order_id'] ?? 'unknown';
-        $this->println('Worker#%d: Processing order %s', $workerId, $orderId);
-        
-        // 模拟订单处理
-        sleep(2);
-        
-        // 模拟处理失败
-        if (empty($data['order_id'])) {
-            $this->addError('Order ID is required');
-            return false;
-        }
-        
-        $this->println('Worker#%d: Order %s processed successfully', $workerId, $orderId);
-        return true;
-    }
-
-    /**
-     * 处理报表生成
-     */
-    private function handleGenerateReport(array $data, int $workerId): bool
-    {
-        $reportType = $data['report_type'] ?? 'unknown';
-        $this->println('Worker#%d: Generating %s report', $workerId, $reportType);
-        
-        // 模拟报表生成
-        sleep(3);
-        
-        $this->println('Worker#%d: Report %s generated successfully', $workerId, $reportType);
         return true;
     }
 
