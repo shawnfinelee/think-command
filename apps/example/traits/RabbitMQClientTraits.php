@@ -57,9 +57,9 @@ trait RabbitMQClientTraits
     {
         try {
             __LOG_MESSAGE($data, "sendToQueue.params__{$exchangeName}_{$routingKey}");
-            
+
             $channel = $this->getRabbitMQChannel();
-            
+
             // 声明交换机
             $channel->exchange_declare(
                 $exchangeName,
@@ -77,12 +77,12 @@ trait RabbitMQClientTraits
                 'timestamp' => time(),
                 'content_type' => 'application/json'
             ];
-            
+
             // 合并自定义属性（但保持application_headers分离）
             $applicationHeaders = $properties['application_headers'] ?? [];
             unset($properties['application_headers']);
             $messageProperties = array_merge($messageProperties, $properties);
-            
+
             // 如果有application_headers，单独设置
             if (!empty($applicationHeaders)) {
                 $messageProperties['application_headers'] = $applicationHeaders;
@@ -92,7 +92,7 @@ trait RabbitMQClientTraits
 
             // 发布消息
             $result = $channel->basic_publish($message, $exchangeName, $routingKey);
-            
+
             $messageId = $messageProperties['message_id'];
             __LOG_MESSAGE([
                 'exchange' => $exchangeName,
@@ -100,9 +100,8 @@ trait RabbitMQClientTraits
                 'message_id' => $messageId,
                 'body_length' => strlen($messageBody)
             ], 'sendToQueue.response__' . $messageId);
-            
+
             return $messageId;
-            
         } catch (\Exception $e) {
             __LOG_MESSAGE($e);
             return false;
@@ -113,9 +112,9 @@ trait RabbitMQClientTraits
     {
         try {
             __LOG_MESSAGE($data, "sendToQueueWithQueue.params__{$queueName}");
-            
+
             $channel = $this->getRabbitMQChannel();
-            
+
             // 声明队列
             $channel->queue_declare(
                 $queueName,
@@ -133,12 +132,12 @@ trait RabbitMQClientTraits
                 'timestamp' => time(),
                 'content_type' => 'application/json'
             ];
-            
+
             // 合并自定义属性（但保持application_headers分离）
             $applicationHeaders = $properties['application_headers'] ?? [];
             unset($properties['application_headers']);
             $messageProperties = array_merge($messageProperties, $properties);
-            
+
             // 如果有application_headers，单独设置
             if (!empty($applicationHeaders)) {
                 $messageProperties['application_headers'] = $applicationHeaders;
@@ -148,16 +147,15 @@ trait RabbitMQClientTraits
 
             // 直接发布到队列
             $result = $channel->basic_publish($message, '', $queueName);
-            
+
             $messageId = $messageProperties['message_id'];
             __LOG_MESSAGE([
                 'queue' => $queueName,
                 'message_id' => $messageId,
                 'body_length' => strlen($messageBody)
             ], 'sendToQueueWithQueue.response__' . $messageId);
-            
+
             return $messageId;
-            
         } catch (\Exception $e) {
             __LOG_MESSAGE($e);
             return false;

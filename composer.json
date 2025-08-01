@@ -30,7 +30,6 @@
     "php-amqplib/php-amqplib": "^3.7"
   },
   "require-dev": {
-    "eaglewu/swoole-ide-helper": "dev-master",
     "phpunit/phpunit": "^8.0",
     "friendsofphp/php-cs-fixer": "^3.0",
     "phpstan/phpstan": "^1.0"

@@ -102,7 +102,7 @@ abstract class ThinkRabbitMQCommand extends ThinkCommand
         if (!class_exists('PhpAmqpLib\Connection\AMQPStreamConnection')) {
             throw new \Exception('php-amqplib library is required. Please install it via composer: composer require php-amqplib/php-amqplib');
         }
-        
+
         // 动态配置队列相关名称
         $this->dynamicOverrideQueueNames($input);
         // 显示配置信息
@@ -136,7 +136,7 @@ abstract class ThinkRabbitMQCommand extends ThinkCommand
     {
         $output = $this->output;
         $this->setupRabbitMQConnection();
-        
+
         try {
             // 声明交换机
             $this->channel->exchange_declare(
@@ -164,7 +164,7 @@ abstract class ThinkRabbitMQCommand extends ThinkCommand
             );
 
             // 设置QoS
-            $this->channel->basic_qos(null, $this->prefetchCount, null);
+            $this->channel->basic_qos(0, $this->prefetchCount, false);
 
             // 定义消息处理回调
             $callback = function (AMQPMessage $message) use ($output, $workerId) {
@@ -209,7 +209,7 @@ abstract class ThinkRabbitMQCommand extends ThinkCommand
     {
         $messageId = $message->get('message_id') ?: uniqid();
         $deliveryTag = $message->getDeliveryTag();
-        
+
         // 获取重试次数 (从消息头中获取，如果没有则为第一次)
         $headers = [];
         if ($message->has('application_headers')) {
@@ -219,7 +219,7 @@ abstract class ThinkRabbitMQCommand extends ThinkCommand
             }
         }
         $consumedTimes = isset($headers['x-retry-count']) ? (int)$headers['x-retry-count'] + 1 : 1;
-        
+
         $s = "$messageId" . ($consumedTimes > 1 ? "($consumedTimes)" : '') . ' ';
         $output->write("#$workerId MessageId $s");
         __LOG_MESSAGE($s, "#$workerId MessageId");
@@ -239,7 +239,7 @@ abstract class ThinkRabbitMQCommand extends ThinkCommand
 
             // 获取数组信息
             $json = $this->getMessageBodyJson($message);
-            
+
             // 数据格式错误
             if (null === $json || false === $json) {
                 $ret = true;
@@ -261,25 +261,25 @@ abstract class ThinkRabbitMQCommand extends ThinkCommand
                     // 增加重试计数
                     $retryHeaders = $headers;
                     $retryHeaders['x-retry-count'] = $consumedTimes;
-                    
+
                     // 发布重试消息
                     $properties = [
                         'delivery_mode' => 2, // 持久化
                     ];
-                    
+
                     // 设置应用头信息
                     if (!empty($retryHeaders)) {
                         $properties['application_headers'] = $retryHeaders;
                     }
-                    
+
                     $retryMessage = new AMQPMessage($message->getBody(), $properties);
-                    
+
                     $this->channel->basic_publish(
                         $retryMessage,
                         $this->exchangeName,
                         $this->routingKey
                     );
-                    
+
                     // 确认原消息
                     $this->channel->basic_ack($deliveryTag);
                 }
@@ -289,7 +289,7 @@ abstract class ThinkRabbitMQCommand extends ThinkCommand
         } catch (\Exception $e) {
             __LOG_MESSAGE($e);
             $output->error($e->getMessage());
-            
+
             // 发生异常，拒绝消息但不重新入队
             if (!$this->autoAck) {
                 $this->channel->basic_nack($deliveryTag, false, false);
@@ -382,7 +382,7 @@ abstract class ThinkRabbitMQCommand extends ThinkCommand
                     $configs['heartbeat'] ?? 0
                 );
             }
-            
+
             if (null === $this->channel || !$this->channel->is_open()) {
                 $this->channel = $this->connection->channel();
             }

@@ -47,4 +47,22 @@ return [
         'keepalive' => Env::get('rabbitmq.keepalive', true),
         'heartbeat' => Env::get('rabbitmq.heartbeat', 0),
     ],
+    /**
+     * 阿里云消息队列RabbitMQ版
+     */
+    'aliyun_rabbitmq' => [
+        'endpoint' => Env::get('aliyun_rabbitmq.endpoint', ''),
+        'port' => Env::get('aliyun_rabbitmq.port', 5672),
+        'instance_id' => Env::get('aliyun_rabbitmq.instance_id', ''),
+        'access_key' => Env::get('aliyun_rabbitmq.access_key', ''),
+        'access_secret' => Env::get('aliyun_rabbitmq.access_secret', ''),
+        'vhost' => Env::get('aliyun_rabbitmq.vhost', '/'),
+        'connection_timeout' => Env::get('aliyun_rabbitmq.connection_timeout', 10.0),
+        'read_write_timeout' => Env::get('aliyun_rabbitmq.read_write_timeout', 10.0),
+        'keepalive' => Env::get('aliyun_rabbitmq.keepalive', false),
+        'heartbeat' => Env::get('aliyun_rabbitmq.heartbeat', 0),
+        // 或者直接配置用户名密码(已生成好的)
+        'username' => Env::get('aliyun_rabbitmq.username', ''),
+        'password' => Env::get('aliyun_rabbitmq.password', ''),
+    ],
 ];

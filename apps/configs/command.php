@@ -14,4 +14,6 @@ return [
     'app\example\MQQueueCommand',
     'app\example\MNSQueueV2Command',
     'app\example\RabbitMQCommand',
+    'app\example\AliyunRabbitMQCommand',
+    'app\example\AliyunRabbitMQTopicCommand',
 ];
