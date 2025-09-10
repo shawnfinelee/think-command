@@ -33,20 +33,7 @@ return [
         'instance_id' => Env::get('mq.instance_id', ''),
         'group_id' => Env::get('mq.group_id', ''),
     ],
-    /**
-     * RabbitMQ - 消息队列
-     */
-    'rabbitmq' => [
-        'host' => Env::get('rabbitmq.host', 'localhost'),
-        'port' => Env::get('rabbitmq.port', 5672),
-        'username' => Env::get('rabbitmq.username', 'guest'),
-        'password' => Env::get('rabbitmq.password', 'guest'),
-        'vhost' => Env::get('rabbitmq.vhost', '/'),
-        'connection_timeout' => Env::get('rabbitmq.connection_timeout', 3.0),
-        'read_write_timeout' => Env::get('rabbitmq.read_write_timeout', 9.0),
-        'keepalive' => Env::get('rabbitmq.keepalive', true),
-        'heartbeat' => Env::get('rabbitmq.heartbeat', 0),
-    ],
+
     /**
      * 阿里云消息队列RabbitMQ版
      */

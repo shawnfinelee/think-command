@@ -1,6 +1,6 @@
-# RabbitMQ 概念关系图
+# 阿里云RabbitMQ 概念关系图
 
-以下Mermaid图展示了RabbitMQ中各个核心概念的联系关系：
+以下Mermaid图展示了阿里云RabbitMQ中各个核心概念的联系关系：
 
 ```mermaid
 graph TB
@@ -138,10 +138,12 @@ graph TB
 
 ## 在ThinkCommand项目中的应用
 
-本项目通过`ThinkRabbitMQCommand`抽象类封装了RabbitMQ的消费逻辑：
+本项目通过`ThinkAliyunRabbitMQCommand`抽象类封装了阿里云RabbitMQ的消费逻辑：
 
 - 支持动态配置Exchange、Queue、Routing Key
 - 内置重试机制和死信队列处理
 - 支持多Worker并发消费
 - 提供QoS设置和确认模式选择
 - 集成Swoole Process Pool实现高性能消费
+- 支持阿里云特有的认证方式(AccessKey/Secret)
+- 完全托管的云端RabbitMQ服务

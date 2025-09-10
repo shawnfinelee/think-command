@@ -76,7 +76,7 @@ protected function consume(string $message_id, array $json, $message, int $worke
 protected function consume(string $message_id, array $json, $message, array $properties, int $workerId = 0);
 ```
 
-#### `ThinkRabbitMQCommand` RabbitMQ队列消费
+#### `ThinkAliyunRabbitMQCommand` 阿里云RabbitMQ队列消费
 
 - 消息消费 `consume`
 
@@ -88,30 +88,3 @@ protected function consume(string $message_id, array $json, $message, array $pro
 * @param int     $workerId   worker进程ID
 protected function consume(string $messageId, array $json, array $headers, AMQPMessage $message, int $workerId = 0);
 ```
-
-### RabbitMQ 开发环境
-
-如果使用Docker运行RabbitMQ，可以使用以下命令启动：
-
-```bash
-docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
-```
-
-#### RabbitMQ 管理界面登录凭据
-
-访问管理界面：http://localhost:15672
-
-**方案1：默认用户**
-- 用户名：`guest`
-- 密码：`guest`
-
-**方案2：管理员用户**
-- 用户名：`admin`
-- 密码：`admin123`
-
-> 注意：如果需要创建新用户，可以使用以下命令：
-> ```bash
-> docker exec rabbitmq rabbitmqctl add_user admin admin123
-> docker exec rabbitmq rabbitmqctl set_user_tags admin administrator
-> docker exec rabbitmq rabbitmqctl set_permissions -p / admin ".*" ".*" ".*"
-> ```
