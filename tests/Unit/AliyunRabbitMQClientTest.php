@@ -9,9 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\Unit;
+namespace Unit;
 
-use app\example\AliyunRabbitMQCommand;
 use app\example\traits\AliyunRabbitMQClientTraits;
 use PHPUnit\Framework\TestCase;
 
@@ -22,10 +21,50 @@ class AliyunRabbitMQClientTest extends TestCase
 {
     use AliyunRabbitMQClientTraits;
 
-    Public function testSend()
+    /**
+     * 发送测试消息的方法
+     */
+    public function testSend()
     {
-        $command = new AliyunRabbitMQCommand();
-        $command->sendTestMessage();
+        $testMessages = [
+            [
+                'action' => 'send_email',
+                'to' => 'test@example.com',
+                'subject' => 'Test Email from Aliyun RabbitMQ',
+                'content' => 'This is a test message',
+                'timestamp' => time()
+            ],
+        ];
+
+        foreach ($testMessages as $message) {
+            $messageId = $this->sendToAliyunQueue(
+                'example.aliyun.exchange',
+                'example.aliyun.key',
+                $message,
+                [], // properties
+                'direct' // AliyunRabbitMQCommand 使用 direct 类型
+            );
+
+            if ($messageId) {
+                echo "Sent test message: {$messageId}\n";
+            } else {
+                echo "Failed to send test message\n";
+            }
+        }
+    }
+
+    /**
+     * 发送失败测试消息的方法
+     */
+    public function testSendFail()
+    {
+        $messageId = $this->sendToAliyunQueue(
+            'example.aliyun.exchange',
+            'example.aliyun.key',
+            ['action' => 'test_fail']
+        );
+        echo "sent message {$messageId}" . PHP_EOL;
+        $this->assertNotEmpty($messageId);
     }
 
     public function testAliyunRabbitMQConnection()

@@ -82,14 +82,6 @@ class AliyunRabbitMQCommand extends ThinkAliyunRabbitMQCommand
                 switch ($json['action']) {
                     case 'send_email':
                         return $this->handleSendEmail($json, $messageId, $workerId);
-                    case 'process_order':
-                        return $this->handleProcessOrder($json, $messageId, $workerId);
-                    case 'sync_data':
-                        return $this->handleSyncData($json, $messageId, $workerId);
-                    case 'test_fail':
-                        // 模拟处理失败的情况
-                        __LOG_MESSAGE('Simulating failure for testing', $messageId);
-                        return false;
                     default:
                         __LOG_MESSAGE("Unknown action: {$json['action']}", $messageId);
                         return true; // 未知动作直接确认，避免重复消费
@@ -131,98 +123,6 @@ class AliyunRabbitMQCommand extends ThinkAliyunRabbitMQCommand
         } catch (\Exception $e) {
             __LOG_MESSAGE($e, $messageId);
             return false;
-        }
-    }
-
-    /**
-     * 处理订单处理
-     */
-    private function handleProcessOrder(array $data, string $messageId, int $workerId): bool
-    {
-        try {
-            __LOG_MESSAGE([
-                'action' => 'process_order',
-                'order_id' => $data['order_id'] ?? 'unknown',
-                'amount' => $data['amount'] ?? 0,
-                'worker_id' => $workerId
-            ], "AliyunRabbitMQ.handleProcessOrder.{$messageId}");
-
-            // 模拟订单处理逻辑
-            sleep(2); // 模拟耗时操作
-
-            return true;
-        } catch (\Exception $e) {
-            __LOG_MESSAGE($e, $messageId);
-            return false;
-        }
-    }
-
-    /**
-     * 处理数据同步
-     */
-    private function handleSyncData(array $data, string $messageId, int $workerId): bool
-    {
-        try {
-            __LOG_MESSAGE([
-                'action' => 'sync_data',
-                'table' => $data['table'] ?? 'unknown',
-                'record_id' => $data['record_id'] ?? 'unknown',
-                'worker_id' => $workerId
-            ], "AliyunRabbitMQ.handleSyncData.{$messageId}");
-
-            // 模拟数据同步逻辑
-            sleep(1); // 模拟耗时操作
-
-            return true;
-        } catch (\Exception $e) {
-            __LOG_MESSAGE($e, $messageId);
-            return false;
-        }
-    }
-
-    /**
-     * 发送测试消息的方法 (可用于测试)
-     */
-    public function sendTestMessage()
-    {
-        $testMessages = [
-            [
-                'action' => 'send_email',
-                'to' => 'test@example.com',
-                'subject' => 'Test Email from Aliyun RabbitMQ',
-                'content' => 'This is a test message',
-                'timestamp' => time()
-            ],
-            [
-                'action' => 'process_order',
-                'order_id' => 'ORD' . uniqid(),
-                'amount' => 99.99,
-                'customer_id' => 12345,
-                'timestamp' => time()
-            ],
-            [
-                'action' => 'sync_data',
-                'table' => 'users',
-                'record_id' => 12345,
-                'operation' => 'update',
-                'timestamp' => time()
-            ]
-        ];
-
-        foreach ($testMessages as $message) {
-            $messageId = $this->sendToAliyunQueue(
-                $this->getExchangeName(),
-                $this->getRoutingKey(),
-                $message,
-                [], // properties
-                'direct' // AliyunRabbitMQCommand 使用 direct 类型
-            );
-
-            if ($messageId) {
-                echo "Sent test message: {$messageId}\n";
-            } else {
-                echo "Failed to send test message\n";
-            }
         }
     }
 }
