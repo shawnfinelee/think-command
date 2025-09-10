@@ -110,6 +110,7 @@ abstract class ThinkAliyunRabbitMQCommand extends ThinkCommand
             [
                 "WorkerNum: <info>{$this->workerNum}</info>",
                 "Endpoint: <info>{$this->getEndpoint()}</info>",
+                "Vhost: <info>{$this->getVhost()}</info>",
                 "Exchange: <info>{$this->getExchangeName()}</info> ({$this->exchangeType})",
                 "Queue: <info>{$this->getQueueName()}</info>",
                 "RoutingKey: <info>{$this->getRoutingKey()}</info>",
@@ -484,6 +485,17 @@ abstract class ThinkAliyunRabbitMQCommand extends ThinkCommand
     {
         $configs = $this->getConfigs();
         return $configs['endpoint'] ?? $configs['host'] ?? 'unknown';
+    }
+
+    /**
+     * 获取阿里云RabbitMQ虚拟主机
+     *
+     * @return string
+     */
+    protected function getVhost(): string
+    {
+        $configs = $this->getConfigs();
+        return $configs['vhost'] ?? '/';
     }
 
     /**
